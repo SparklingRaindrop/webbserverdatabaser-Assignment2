@@ -11,7 +11,7 @@ const db = new sqlite3.Database('./config/db.sqlite', (error) => {
             title TEXT,
             isbn TEXT,
             author TEXT,
-            publishYear INTEGER,
+            publish_year INTEGER,
             publisher TEXT
         );
     `;

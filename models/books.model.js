@@ -38,7 +38,7 @@ function getById(id) {
 
 function add(newBook) {
     const query = 
-        'INSERT INTO books (title, isbn, author, publishYear, publisher)' +
+        'INSERT INTO books (title, isbn, author, publish_year, publisher)' +
         'VALUES (?, ?, ?, ?, ?)';
     const { title, isbn, author, publishYear, publisher } = newBook;
 
