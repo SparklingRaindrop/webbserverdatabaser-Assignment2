@@ -1,6 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
-const logWriter = require('./js/logWriter');
+const logWriter = require('./middlewares/logWriter');
 
 const bodyParser = require('body-parser');
 const booksRouter = require('./routers/books.router');
@@ -16,6 +16,4 @@ app.use(logWriter());
 app.use('/books', booksRouter);
 app.use('/auth', authRouter);
 
-app.listen(PORT, () => {
-    `Server is running on port ${PORT}`
-});
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
