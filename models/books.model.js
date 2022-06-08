@@ -23,7 +23,7 @@ function getAll() {
 }
 
 function getById(id) {
-    const query = 'SELECT * FROM Book WHERE book_id = ?';
+    const query = 'SELECT * FROM Book WHERE id = ?';
 
     return new Promise ((resolve, reject) => {
         db.get(query, id, (error, rows) => {
@@ -55,7 +55,7 @@ function add(newBook) {
 
 async function replace(id, newData) {
     const convertedNewData = convertToString(newData);
-    const query = `UPDATE Book SET ${convertedNewData} WHERE book_id = ${id}`;
+    const query = `UPDATE Book SET ${convertedNewData} WHERE id = ${id}`;
 
     return new Promise ((resolve, reject) => {
         db.run(query, (error) => {
@@ -84,7 +84,7 @@ function update(id, newData) {
 }
 
 function remove(id) {
-    const query = `DELETE FROM Book WHERE book_id = ${id}`;
+    const query = `DELETE FROM Book WHERE id = ${id}`;
 
     return new Promise ((resolve, reject) => {
         db.run(query, (error) => {
@@ -93,6 +93,20 @@ function remove(id) {
                 reject(error);
             }
             resolve();
+        });
+    });
+}
+
+function getAllAvailableBooks() {
+    const query = 'SELECT Book.id, title FROM Book ' +
+        'LEFT JOIN Borrowing ON book_id = Book.id WHERE book_id IS NULL;';
+    return new Promise ((resolve, reject) => {
+        db.all(query, (error, rows) => {
+            if (error) {
+                console.error(error.message);
+                reject(error);
+            }
+            resolve(rows);
         });
     });
 }
@@ -116,5 +130,6 @@ module.exports = {
     add,
     replace,
     update,
-    remove
+    remove,
+    getAllAvailableBooks
 };
