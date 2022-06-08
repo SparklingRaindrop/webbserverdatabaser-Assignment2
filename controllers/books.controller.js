@@ -2,12 +2,16 @@ const model = require('../models/books.model');
 
 async function getAllBooks(_, res) {
     const result = await model.getAll();
-    res.send(result);
+    const availableCount = await model.getAllAvailableBooks();
+    res.json({
+        available: availableCount.length,
+        books: result,
+    });
 }
 
 async function getBook(req, res) {
     const result = await model.getById(Number(req.params.id));
-    res.send(result);
+    res.json(result);
 }
 
 async function addBook(req, res) {
@@ -28,7 +32,7 @@ async function replaceBook(req, res) {
     const newBook = req.body;
 
     if (!isValid(newBook)) {
-        res.status(400).json({
+        res.status(400).send({
             error: 'Data has wrong structure. Check properties and its data type.'
         });
         return;
