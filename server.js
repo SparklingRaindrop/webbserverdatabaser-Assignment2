@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const booksRouter = require('./routers/books.router');
 const authRouter = require('./routers/auth.router');
 
-const PORT = 5000;
+const PORT = process.env.PORT || 4500;
 
 const app = express();
 app.use(bodyParser.json());
