@@ -52,12 +52,10 @@ async function loginUser(req, res) {
         return;
     }
 
-    const { name, family_name, id } = matchedUser;
+    const { id } = matchedUser;
     const token = jwt.sign({
-        id: id,
-        name: name,
-        familyName: family_name,
-        email: email
+        id,
+        email
     }, 
         process.env.SECRET_KEY, 
         { expiresIn: ms(TOKEN_DURATION) }
