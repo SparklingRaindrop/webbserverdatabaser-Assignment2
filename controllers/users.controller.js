@@ -73,15 +73,17 @@ async function lendBook(req, res) {
 }
 
 async function returnBook(req, res) {
-    if (!req.body.hasOwnProperty('id') ||
-        !req.hasOwnProperty('user') ||
-        !req.user.hasOwnProperty('id')
-    ) {
+    if (!req.body.hasOwnProperty('id')) {
         res.status(400).send('Book ID is required.');
         return;
     }
+    if (!req.hasOwnProperty('user') ||
+    !req.user.hasOwnProperty('id')) {
+        res.status(400).send('User data is required.'); // TODO think about hte message
+        return;
+    }
 
-    const bookId = req.body.book_id;
+    const bookId = req.body.id;
     const {email, id: userId} = req.user;
 
     // Check if user exists
@@ -91,7 +93,7 @@ async function returnBook(req, res) {
             return;
         });
     if (!targetUser) {
-        res.status(404).send(`The user doesn't exist in the database.)`);
+        res.status(404).send(`The user doesn't exist in the database.`);
         return;
     }
 
@@ -102,7 +104,7 @@ async function returnBook(req, res) {
             return;
     });
     if (!targetBook) {
-        res.status(404).send(`The book doesn't exist in the database.)`);
+        res.status(404).send(`The book doesn't exist in the database.`);
         return;
     }
 

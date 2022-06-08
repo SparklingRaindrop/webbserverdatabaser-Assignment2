@@ -116,7 +116,7 @@ function convertToString(newData) {
     const result = entries.map(entry => {
         // publishYear is integer
         if (entry[0] === 'publishYear') {
-            return `${entry[0]} = ${entry[1]}`;
+            return `publish_year = ${entry[1]}`;
         }
         return `${entry[0]} = "${entry[1]}"`
     }).toString();
