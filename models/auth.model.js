@@ -9,7 +9,7 @@ const db = require('../config/database');
 
 function add(newUser) {
     const query =
-        'INSERT INTO User (id, name, family_name, email, password) ' + 
+        'INSERT INTO User (user_id, name, family_name, email, password) ' + 
         'VALUES (?, ?, ?, ?, ?);';
     const arguments = Object.values(newUser);
 

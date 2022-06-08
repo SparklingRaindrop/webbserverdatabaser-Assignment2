@@ -9,7 +9,7 @@ const db = require('../config/database');
 */
 
 function getAll() {
-    const query = 'SELECT * FROM books';
+    const query = 'SELECT * FROM Book';
     
     return new Promise((resolve, reject) => {
         db.all(query, (error, rows) => {
@@ -23,7 +23,7 @@ function getAll() {
 }
 
 function getById(id) {
-    const query = 'SELECT * FROM books WHERE id = ?';
+    const query = 'SELECT * FROM Book WHERE book_id = ?';
 
     return new Promise ((resolve, reject) => {
         db.get(query, id, (error, rows) => {
@@ -38,12 +38,12 @@ function getById(id) {
 
 function add(newBook) {
     const query = 
-        'INSERT INTO books (title, isbn, author, publish_year, publisher)' +
+        'INSERT INTO Book (title, isbn, author, publish_year, publisher)' +
         'VALUES (?, ?, ?, ?, ?)';
     const { title, isbn, author, publishYear, publisher } = newBook;
 
     return new Promise ((resolve, reject) => {
-        db.run(query, [title, isbn, author, publishYear, publisher], (error, rows) => {
+        db.run(query, [title, isbn, author, publishYear, publisher], (error) => {
             if (error) {
                 console.error(error.message);
                 reject(error);
@@ -55,22 +55,22 @@ function add(newBook) {
 
 async function replace(id, newData) {
     const convertedNewData = convertToString(newData);
-    const query = `UPDATE books SET ${convertedNewData} WHERE id = ${id}`;
+    const query = `UPDATE Book SET ${convertedNewData} WHERE book_id = ${id}`;
 
     return new Promise ((resolve, reject) => {
-        db.run(query, (error, rows) => {
+        db.run(query, (error) => {
             if (error) {
                 console.error(error.message);
                 reject(error);
             }
-            resolve(rows);
+            resolve();
         });
     });
 }
 
 function update(id, newData) {
     const convertedNewData = convertToString(newData);
-    const query = `UPDATE books SET ${convertedNewData} WHERE id = ${id}`;
+    const query = `UPDATE Book SET ${convertedNewData} WHERE id = ${id}`;
 
     return new Promise ((resolve, reject) => {
         db.run(query, (error) => {
@@ -84,7 +84,7 @@ function update(id, newData) {
 }
 
 function remove(id) {
-    const query = `DELETE FROM books WHERE id = ${id}`;
+    const query = `DELETE FROM Book WHERE book_id = ${id}`;
 
     return new Promise ((resolve, reject) => {
         db.run(query, (error) => {
@@ -100,6 +100,7 @@ function remove(id) {
 function convertToString(newData) {
     const entries = Object.entries(newData);
     const result = entries.map(entry => {
+        // publishYear is integer
         if (entry[0] === 'publishYear') {
             return `${entry[0]} = ${entry[1]}`;
         }

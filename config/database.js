@@ -7,7 +7,7 @@ const db = new sqlite3.Database('./config/db.sqlite', (error) => {
     }
     const bookStatement = `
         CREATE TABLE IF NOT EXISTS Book (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            book_id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT,
             isbn TEXT,
             author TEXT,
@@ -18,7 +18,7 @@ const db = new sqlite3.Database('./config/db.sqlite', (error) => {
 
     const userStatement = `
         CREATE TABLE IF NOT EXISTS User (
-            id TEXT PRIMARY KEY,
+            user_id TEXT PRIMARY KEY,
             name TEXT,
             family_name TEXT,
             email TEXT UNIQUE,
@@ -26,7 +26,19 @@ const db = new sqlite3.Database('./config/db.sqlite', (error) => {
         );
     `;
 
-    [bookStatement, userStatement].forEach(statement => {
+    const borrowingStatement = `
+    CREATE TABLE IF NOT EXISTS Borrowing (
+        borrowing_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        date_borrowed TEXT,
+        date_return TEXT,
+        user_id TEXT NOT NULL,
+        book_id INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES User (user_id),
+        FOREIGN KEY (book_id) REFERENCES User (book_id)
+    );
+`;
+
+    [bookStatement, userStatement, borrowingStatement].forEach(statement => {
         db.run(statement, (error) => {
             if (error) {
                 console.error(error.message);
