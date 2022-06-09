@@ -4,7 +4,7 @@ const db = require('../config/database');
     title: string(required),
     isbn: string(required),
     author: string(required),
-    publishYear: int,
+    publish_year: int,
     publisher: string,
 */
 
@@ -40,15 +40,15 @@ function matchBy(column, row) {
 function add(book) {
     const query = 
         'INSERT INTO Book (title, isbn, author, publish_year, publisher)' +
-        'VALUES ($title, $isbn, $author, $publishYear, $publisher)';
-    const { title, isbn, author, publishYear, publisher } = book;
+        'VALUES ($title, $isbn, $author, $publish_year, $publisher)';
+    const { title, isbn, author, publish_year, publisher } = book;
 
     return new Promise ((resolve, reject) => {
         db.run(query, {
             $title: title,
             $isbn: isbn,
             $author: author,
-            $publishYear: publishYear,
+            $publish_year: publish_year,
             $publisher: publisher,
         }, (error) => {
             if (error) {

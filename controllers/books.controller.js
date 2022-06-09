@@ -4,7 +4,7 @@ const PROPERTIES = {
     title: 'string',
     isbn: 'string',
     author: 'string',
-    publishYear: 'number',
+    publish_year: 'number',
     publisher: 'string',
 };
 const REQUIRED = ['title', 'isbn', 'author'];

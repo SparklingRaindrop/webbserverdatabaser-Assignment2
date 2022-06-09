@@ -3,49 +3,49 @@ const sampleBooks = [
         "title": "Harry Potter and the Philosopher's Stone",
         "isbn": "0-7475-3269-9",
         "author": "J. K. Rowling",
-        "publishYear": 1997,
+        "publish_year": 1997,
         "publisher": "Bloomsbury"
     },
     {
         "title": "Harry Potter and the Chamber of Secrets",
         "isbn": "0-7475-3849-2",
         "author": "J. K. Rowling",
-        "publishYear": 1998,
+        "publish_year": 1998,
         "publisher": "Bloomsbury"
     },
     {
         "title": "Harry Potter and the Prisoner of Azkaban",
         "isbn": "0-7475-4215-5",
         "author": "J. K. Rowling",
-        "publishYear": 1999,
+        "publish_year": 1999,
         "publisher": "Bloomsbury"
     },
     {
         "title": "Harry Potter and the Goblet of Fire",
         "isbn": "0-7475-4624-X",
         "author": "J. K. Rowling",
-        "publishYear": 2000,
+        "publish_year": 2000,
         "publisher": "Bloomsbury"
     },
     {
         "title": "Harry Potter and the Order of the Phoenix",
         "isbn": "0-7475-5100-6",
         "author": "J. K. Rowling",
-        "publishYear": 2003,
+        "publish_year": 2003,
         "publisher": "Bloomsbury"
     },
     {
         "title": "Harry Potter and the Half-Blood Prince",
         "isbn": "0-7475-8108-8",
         "author": "J. K. Rowling",
-        "publishYear": 2005,
+        "publish_year": 2005,
         "publisher": "Bloomsbury"
     },
     {
         "title": "Harry Potter and the Deathly Hallows",
         "isbn": "0-545-01022-5",
         "author": "J. K. Rowling",
-        "publishYear": 2007,
+        "publish_year": 2007,
         "publisher": "Bloomsbury"
     }
 ];
@@ -70,9 +70,9 @@ async function addSampleBooks(db) {
         'VALUES (?, ?, ?, ?, ?)';
         
     const promises = sampleBooks.map(book => {
-        const { title, isbn, author, publishYear, publisher } = book;
+        const { title, isbn, author, publish_year, publisher } = book;
         return new Promise ((resolve, reject) => {
-            db.run(query, [title, isbn, author, publishYear, publisher], (error) => {
+            db.run(query, [title, isbn, author, publish_year, publisher], (error) => {
                 if (error) {
                     console.error(error.message);
                     reject(error);
