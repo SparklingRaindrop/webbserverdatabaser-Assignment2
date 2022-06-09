@@ -8,24 +8,29 @@ const model = require('../models/auth.model');
 const TOKEN_DURATION = '10h';
 
 async function addUser(req, res) {
-    if (!isValid(req.body)) {
+    const userInput = req.body;
+    if (!isValid(userInput)) {
         res.status(400).json({
-            error: 'Data has wrong structure or wrong value. Check properties and its data type.'
+            error: 'Data is invalid.',
+            message: 'Check property names, their data types and values.',
         });
         return;
     }
-    const {name, familyName, email, password} = req.body;
+
+    const { name, familyName, email, password } = userInput;
     const isExisting = await model.getByEmail(email) !== undefined;
     if (isExisting) {
-        res.status(400).send('This email is already registered.');
+        res.status(400).send({
+            error: 'This email is already registered.'
+        });
         return;
     }
 
     const newUser = {
         id: uuid.v4(),
-        name,
-        familyName,
-        email,
+        name: name.toLowerCase(),
+        familyName: familyName.toLowerCase(),
+        email: email.toLowerCase(),
         password: md5(password)
     }
     await model.add(newUser);
@@ -36,19 +41,18 @@ async function loginUser(req, res) {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        res.status(400).send('Username and password are required.');
+        res.status(400).send({
+            error: 'Username and password are required.'
+        });
         return;
     }
 
     const matchedUser = await model.getByEmail(email);
-    if (!matchedUser) {
-        res.status(404).send('User doesn\'t exist.');
-        return;
-    }
-
     const hashedPassword = md5(password);
-    if (matchedUser.password !== hashedPassword) {
-        res.status(400).send('Password is incorrect.');
+    if (!matchedUser || matchedUser.password !== hashedPassword) {
+        res.status(404).send({
+            error: 'The email address or password is incorrect.' 
+        });
         return;
     }
 
@@ -58,7 +62,7 @@ async function loginUser(req, res) {
         email
     }, 
         process.env.SECRET_KEY, 
-        { expiresIn: ms(TOKEN_DURATION) }
+        { expiresIn: ms(TOKEN_DURATION) } // TODO Check Duration
     );
     res.json(token);
 }

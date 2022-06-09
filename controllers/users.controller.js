@@ -2,128 +2,158 @@ const usersModel = require('../models/users.model');
 const authModel = require('../models/auth.model');
 const booksModel = require('../models/books.model');
 
-const BORROWING_LIMIT = 10;
+const BORROWING_LIMIT = 5;
 
 async function lendBook(req, res) {
-    if (!req.body.hasOwnProperty('id') ||
-        !req.hasOwnProperty('user') ||
-        !req.user.hasOwnProperty('email')
-    ) {
-        res.status(400).send('Book details are required.');
-        return;
-    }
-
-    const bookId = req.body.id;
-    const userId = req.user.id;
+    const incomingData = await handleIncomingData(req, res);
+    if (!incomingData) return;
+    const { bookId, userId, email } = incomingData;
 
     // Check if user exists
-    const targetUser = await authModel.getByEmail(req.user.email)
-        .catch(error => {
-            res.status(400).send(error);
-            return;
-        });
-    if (!targetUser) {
-        res.status(400).send(`Can\'t find the user data. ID(${userId})`);
-        return;
-    }
+    if (!await isValidUser(email, res)) return;
 
     // Check if book exist in database
-    const targetBook = await booksModel.getById(bookId)
-        .catch(error => {
-            res.status(400).send(error);
-            return;
-        });
-    if (!targetBook) {
-        res.status(400).send(`Can\'t find the book with ID(${bookId}`);
-        return;
-    }
+    if(!await isPresent(bookId, res)) return;
 
     // Check availability
-    const matchedBorrowing = await usersModel.getBorrowingByBookId(bookId)
-        .catch(error => {
-            res.status(400).send(error);
-            return;
-        });
-    if (matchedBorrowing) {
-        res.status(400).send('This book is not available. Another user has borrowed.');
-        return;
-    }
+    if (!await isAvailable(bookId, res)) return;
 
     // Check how many books the user is borrowing
     const borrowingCount = await usersModel.getBorrowingByUserId(userId)
-        .catch(error => {
-            res.status(400).send(error);
+        .catch(() => {
+            res.status(500).send({
+                error: 'Something went wrong on the server.',
+                message: 'Please try again.'
+            });
             return;
         })
-        .finally(data => {
+        .then(data => {
             if (!data) return;
             return data.length;
         });
     if (borrowingCount >= BORROWING_LIMIT) {
-        res.status(400).send(`This user is already borrowing ${BORROWING_LIMIT} books.`);
+        res.status(403).send({
+            error: `This user is already borrowing ${BORROWING_LIMIT} books.`
+        });
         return;
-    } 
+    }
 
     await usersModel.add(userId, bookId)
-        .catch(error => {
-            res.status(400).send(error);
+        .catch(() => {
+            res.status(500).send({
+                error: 'Something went wrong on the server.',
+                message: 'Please try again.'
+            });
             return;
         });
     res.send('Book is checked out successfully.');
 }
 
 async function returnBook(req, res) {
-    if (!req.body.hasOwnProperty('id')) {
-        res.status(400).send('Book ID is required.');
-        return;
-    }
-    if (!req.hasOwnProperty('user') ||
-    !req.user.hasOwnProperty('id')) {
-        res.status(400).send('User data is required.'); // TODO think about hte message
-        return;
-    }
-
-    const bookId = req.body.id;
-    const {email, id: userId} = req.user;
+    const incomingData = await handleIncomingData(req, res);
+    if (!incomingData) return;
+    const { bookId, userId, email } = incomingData;
 
     // Check if user exists
-    const targetUser = await authModel.getByEmail(email)
-        .catch(error => {
-            res.status(400).send(error);
-            return;
-        });
-    if (!targetUser) {
-        res.status(404).send(`The user doesn't exist in the database.`);
-        return;
-    }
+    if(!await isValidUser(email, res)) return;
 
-        // Check if user exists
-    const targetBook = await booksModel.getById(bookId)
-        .catch(error => {
-            res.status(400).send(error);
-            return;
-    });
-    if (!targetBook) {
-        res.status(404).send(`The book doesn't exist in the database.`);
-        return;
-    }
+    // Check if book exist in database
+    if(!await isPresent(bookId, res)) return;
 
-    // Check if book is in borrowing list
+    // Get borrowing data from the list
     const userBorrowingList = await usersModel.getBorrowingByUserId(userId)
         .catch(error => {
             res.status(400).send(error);
             return;
         });
     if (!userBorrowingList) {
-        res.status(400).send('This user hasn\'t borrowed any book.');
+        res.status(400).send({
+            error: 'This user hasn\'t borrowed any book.'
+        });
         return;
     }
     if (!userBorrowingList.some(book => book.book_id === bookId)) {
-        res.status(400).send('This book is not borrowed by this user.');
+        res.status(400).send({
+            error: 'This book is not borrowed by this user.'
+        });
         return;
     }
     await usersModel.removeBorrowing(userId, bookId);
     res.send('Successfully returned');
+}
+
+async function handleIncomingData(req, res) {
+    if (!req.body.hasOwnProperty('bookId') || typeof req.body.bookId !== 'number') {
+        res.status(400).send({
+            error: 'Expected bookId',
+            message: 'Ensure to send bookId in correct type.'
+        });
+        return null;
+    }
+
+    const bookId = req.body.bookId;
+    // TokenChecker has made sure properties: userId, email
+    const {id: userId, email} = req.user;
+
+    return {
+        bookId,
+        userId,
+        email
+    };
+}
+
+async function isValidUser(email, res) {
+    const targetUser = await authModel.getByEmail(email)
+        .catch(() => {
+            res.status(500).send({
+                error: 'Something went wrong on the server.'
+            });
+            return false;
+        });
+    // Decoded token contained an e-mail that doesn't exist on user list.
+    if (!targetUser) {
+        res.status(403).send({
+            error: `Token contains invalid data.`
+        });
+        return false;
+    }
+    return true;
+}
+
+async function isPresent(bookId, res) {
+    const targetBook = await booksModel.matchBy('id', bookId)
+        .catch(() => {
+            res.status(500).send({
+                error: 'Something went wrong on the server.',
+                message: 'Please try again.'
+            });
+            return false;
+        });
+    if (!targetBook) {
+        res.status(404).send({
+            error: `The book (ID: ${bookId}) doesn't exist in the database.)`
+        });
+        return false;
+    }
+    return true;
+}
+
+async function isAvailable(bookId, res) {
+    const matchedBorrowing = await usersModel.getBorrowingByBookId(bookId)
+        .catch(() => {
+            res.status(500).send({
+                error: 'Something went wrong on the server.',
+                message: 'Please try again.'
+            });
+            return false;
+        });
+    if (matchedBorrowing) {
+        res.status(400).send({
+            error: 'This book is not available. Another user has already borrowed.'
+        });
+        return false;
+    }
+    return true;
 }
 
 module.exports = {
