@@ -1,4 +1,3 @@
-const res = require('express/lib/response');
 const authModel = require('../models/auth.model');
 const userModel = require('../models/users.model');
 
