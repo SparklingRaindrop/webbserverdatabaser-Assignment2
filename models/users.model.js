@@ -42,10 +42,12 @@ function getBorrowingByBookId(book_id) {
 }
 
 function getBorrowingByUserId(userId) {
-    const query = 'SELECT * FROM Borrowing WHERE user_id=?';
+    const query = 'SELECT * FROM Borrowing WHERE user_id = $userId';
 
     return new Promise((resolve, reject) => {
-        db.all(query, userId, (error, rows) => {
+        db.all(query, {
+            $userId: userId
+        }, (error, rows) => {
             if (error) {
                 console.error(error.message);
                 reject(error);

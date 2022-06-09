@@ -61,11 +61,14 @@ function add(book) {
 }
 
 function update(id, newData) {
-    const convertedNewData = convertToString(newData);
-    const query = `UPDATE Book SET ${convertedNewData} WHERE id = ${id}`;
+    const { targets, parameters } = prepareQuery(newData);
+    const query = `UPDATE Book SET ${targets} WHERE id = $id`;
 
     return new Promise ((resolve, reject) => {
-        db.run(query, (error) => {
+        db.run(query, {
+            $id: id,
+            ...parameters
+        }, (error) => {
             if (error) {
                 console.error(error.message);
                 reject(error);
@@ -76,10 +79,12 @@ function update(id, newData) {
 }
 
 function remove(id) {
-    const query = `DELETE FROM Book WHERE id = ${id}`;
+    const query = `DELETE FROM Book WHERE id = $id`;
 
     return new Promise ((resolve, reject) => {
-        db.run(query, (error) => {
+        db.run(query, {
+            $id: id,
+        },(error) => {
             if (error) {
                 console.error(error.message);
                 reject(error);
@@ -103,16 +108,22 @@ function getAllAvailableBooks() {
     });
 }
 
-function convertToString(newData) {
-    const entries = Object.entries(newData);
-    const result = entries.map(entry => {
-        // publishYear is integer
-        if (entry[0] === 'publishYear') {
-            return `publish_year = ${entry[1]}`;
-        }
-        return `${entry[0]} = "${entry[1]}"`
-    }).toString();
-    return result;
+function prepareQuery(newDataObj) {
+    const targets = Object.keys(newDataObj).reduce((result, key) => {
+        result += `${result !== '' ? ', ' : ''}${key} = $${key}`;
+        return result;
+    }, '');
+
+    const parameters = {...newDataObj};
+    for (const property in newDataObj) {
+        parameters[`$${property}`] = newDataObj[property];
+        delete parameters[property];
+    }
+
+    return {
+        targets,
+        parameters
+    };
 }
 
 
