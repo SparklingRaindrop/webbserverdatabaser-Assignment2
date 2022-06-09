@@ -11,9 +11,9 @@ const db = new sqlite3.Database('./config/db.sqlite', (error) => {
     const bookStatement = `
         CREATE TABLE IF NOT EXISTS Book (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT,
-            isbn TEXT,
-            author TEXT,
+            title TEXT NOT NULL,
+            isbn TEXT NOT NULL,
+            author TEXT NOT NULL,
             publish_year INTEGER,
             publisher TEXT
         );

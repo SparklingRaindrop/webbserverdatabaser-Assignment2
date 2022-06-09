@@ -1,9 +1,9 @@
 const db = require('../config/database');
 
 /*
-    title: string,
-    isbn: string,
-    author: string,
+    title: string(required),
+    isbn: string(required),
+    author: string(required),
     publishYear: int,
     publisher: string,
 */
@@ -22,11 +22,12 @@ function getAll() {
     });
 }
 
-function getById(id) {
-    const query = 'SELECT * FROM Book WHERE id = ?';
-
+function matchBy(column, row) {
+    const query = `SELECT * FROM Book WHERE ${column} = $value`;
     return new Promise ((resolve, reject) => {
-        db.get(query, id, (error, rows) => {
+        db.get(query, {
+            $value: row
+        }, (error, rows) => {
             if (error) {
                 console.error(error.message);
                 reject(error);
@@ -36,29 +37,20 @@ function getById(id) {
     });
 }
 
-function add(newBook) {
+function add(book) {
     const query = 
         'INSERT INTO Book (title, isbn, author, publish_year, publisher)' +
-        'VALUES (?, ?, ?, ?, ?)';
-    const { title, isbn, author, publishYear, publisher } = newBook;
+        'VALUES ($title, $isbn, $author, $publishYear, $publisher)';
+    const { title, isbn, author, publishYear, publisher } = book;
 
     return new Promise ((resolve, reject) => {
-        db.run(query, [title, isbn, author, publishYear, publisher], (error) => {
-            if (error) {
-                console.error(error.message);
-                reject(error);
-            }
-            resolve();
-        });
-    });
-}
-
-async function replace(id, newData) {
-    const convertedNewData = convertToString(newData);
-    const query = `UPDATE Book SET ${convertedNewData} WHERE id = ${id}`;
-
-    return new Promise ((resolve, reject) => {
-        db.run(query, (error) => {
+        db.run(query, {
+            $title: title,
+            $isbn: isbn,
+            $author: author,
+            $publishYear: publishYear,
+            $publisher: publisher,
+        }, (error) => {
             if (error) {
                 console.error(error.message);
                 reject(error);
@@ -126,9 +118,8 @@ function convertToString(newData) {
 
 module.exports = {
     getAll,
-    getById,
+    matchBy,
     add,
-    replace,
     update,
     remove,
     getAllAvailableBooks

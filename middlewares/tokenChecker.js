@@ -6,7 +6,8 @@ function verifyToken(req, res, next) {
         res.status(403).send('Token required');
         return;
     }
-    const [_, jwtToken] = token.split(' ');
+    // token = "BEARER (token)"
+    const jwtToken = token.split(' ')[1];
     try {
         const decoded = jwt.verify(jwtToken, process.env.SECRET_KEY);
         req.user = decoded;
