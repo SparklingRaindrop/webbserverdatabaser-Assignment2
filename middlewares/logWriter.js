@@ -19,7 +19,7 @@ function logWriter() {
     return function handleLog(req, res, next) {
         const method = req.method;
         const route = req.url;
-
+ 
         onFinished(res, async (err, res) => {
             const logData = `[${date}] "${method} ${route}" ${res.statusCode}\n`;
 
@@ -28,7 +28,7 @@ function logWriter() {
                 flag: 'a',
             });
         });
-
+ 
         next();
     }
 }

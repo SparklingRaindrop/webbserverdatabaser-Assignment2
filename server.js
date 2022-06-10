@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
 const logWriter = require('./middlewares/logWriter');
 
 const bodyParser = require('body-parser');
@@ -9,11 +10,16 @@ const usersRouter = require('./routers/users.router');
 const meRouter = require('./routers/me.router');
 
 const PORT = process.env.PORT || 4500;
+const CORS_OPTION = {
+    origin: 'http://localhost:3000',
+};
 
 const app = express();
-app.use(bodyParser.json());
 app.use(morgan('tiny'));
 app.use(logWriter());
+
+app.use(cors(CORS_OPTION));
+app.use(bodyParser.json());
 
 app.use('/books', booksRouter);
 app.use('/auth', authRouter);
