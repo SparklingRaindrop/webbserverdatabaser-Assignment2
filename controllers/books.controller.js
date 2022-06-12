@@ -60,9 +60,11 @@ async function updateBook(req, res) {
     }
 
     const newData = req.body;
-    newData.isbn.replaceAll('-', '');
     const isValid = validateData(newData, res, req.method);
     if (!isValid) return;
+    if (newData.hasOwnProperty('isbn')) {
+        newData.isbn = newData.isbn.replaceAll('-', '');
+    }
 
     await model.update(id, newData);
     res.send({ message: `The book (ID:${id}) is successfully updated.` });
@@ -106,10 +108,12 @@ function isValid(target, method) {
         if (!hasRequiredData) return false;
     }
 
-    // Check ISBN: 000-0-00000-000-0, 0-00000-000-0 or without hyphen
-    const isbnRegex = /^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/;
-    const isValidIsbn = new RegExp(isbnRegex).test(target.isbn);
-    if (!isValidIsbn) return false;
+    if (target.hasOwnProperty('isbn')) {
+        // Check ISBN: 000-0-00000-000-0, 0-00000-000-0 or without hyphen
+        const isbnRegex = /^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/;
+        const isValidIsbn = new RegExp(isbnRegex).test(target.isbn);
+        if (!isValidIsbn) return false;
+    }
 
     if (method === 'PATCH') return true;
     return Object.keys(PROPERTIES).length === Object.keys(target).length;

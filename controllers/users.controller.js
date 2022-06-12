@@ -4,6 +4,7 @@ const booksModel = require('../models/books.model');
 
 const BORROWING_LIMIT = 5;
 
+// I should not use Book ID?
 async function lendBook(req, res) {
     const incomingData = await handleIncomingData(req, res);
     if (!incomingData) return;

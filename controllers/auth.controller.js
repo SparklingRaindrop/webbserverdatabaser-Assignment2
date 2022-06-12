@@ -46,7 +46,7 @@ async function loginUser(req, res) {
         return;
     }
 
-    const matchedUser = await model.getByEmail(email);
+    const matchedUser = await model.getPasswordByEmail(email);
     const hashedPassword = md5(password);
     if (!matchedUser || matchedUser.password !== hashedPassword) {
         res.status(404).send({
@@ -55,13 +55,19 @@ async function loginUser(req, res) {
         return;
     }
 
-    const { id } = matchedUser;
+    const { id } = await model.getByEmail(email);
+    if (!id) {
+        res.status(500).send({
+            error: 'Something went wrong on the server' 
+        });
+        return;
+    }
     const token = jwt.sign({
         id,
         email
     }, 
         process.env.SECRET_KEY, 
-        { expiresIn: TOKEN_DURATION } // TODO Check Duration
+        { expiresIn: TOKEN_DURATION }
     );
     res.json(token);
 }
