@@ -1,11 +1,10 @@
 require('dotenv').config();
 const uuid = require('uuid');
 const md5 = require('md5');
-const ms = require('ms');
 const jwt = require('jsonwebtoken');
 const model = require('../models/auth.model');
 
-const TOKEN_DURATION = '10h';
+const TOKEN_DURATION = '30m';
 
 async function addUser(req, res) {
     const userInput = req.body;
@@ -62,7 +61,7 @@ async function loginUser(req, res) {
         email
     }, 
         process.env.SECRET_KEY, 
-        { expiresIn: ms(TOKEN_DURATION) } // TODO Check Duration
+        { expiresIn: TOKEN_DURATION } // TODO Check Duration
     );
     res.json(token);
 }
