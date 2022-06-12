@@ -42,7 +42,9 @@ function getBorrowingByBookId(book_id) {
 }
 
 function getBorrowingByUserId(userId) {
-    const query = 'SELECT * FROM Borrowing WHERE user_id = $userId';
+    const query = 'SELECT Borrowing.id, date_borrowed, date_return, Book.title ' +
+    'FROM Borrowing INNER JOIN Book ON book_id = Book.id WHERE user_id = $userId '
+    ;
 
     return new Promise((resolve, reject) => {
         db.all(query, {

@@ -25,7 +25,7 @@ function add(newUser) {
 }
 
 function getByEmail(email) {
-    const query = 'SELECT * FROM User WHERE email = $email;';
+    const query = 'SELECT id, name, family_name, email FROM User WHERE email = $email;';
     return new Promise((resolve, reject) => {
         db.get(query, {
             $email: email
