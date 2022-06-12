@@ -15,7 +15,9 @@ const db = new sqlite3.Database('./config/db.sqlite', (error) => {
             isbn TEXT NOT NULL,
             author TEXT NOT NULL,
             publish_year INTEGER,
-            publisher TEXT
+            publisher TEXT,
+            language TEXT,
+            genre TEXT
         );
     `;
 
@@ -31,7 +33,7 @@ const db = new sqlite3.Database('./config/db.sqlite', (error) => {
 
     const borrowingStatement = `
     CREATE TABLE IF NOT EXISTS Borrowing (
-        borrowing_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         date_borrowed TEXT,
         date_return TEXT,
         user_id TEXT NOT NULL,
