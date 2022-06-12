@@ -1,15 +1,29 @@
 const authModel = require('../models/auth.model');
-const userModel = require('../models/users.model');
+const usersModel = require('../models/users.model');
 
 async function getUserData(req, res) {
     // TokenChecker has made sure properties: userId, email
     const { id: userId, email } = req.user;
 
-    const userData = await authModel.getByEmail(email);
-    const borrowingRecord = await userModel.getBorrowingByUserId(userId)
+    // Check if User is valid
+    const userData = await authModel.getByEmail(email)
+        .catch(() => {
+            res.status(500).send({
+                error: 'Something went wrong on the server.'
+            });
+            return false;
+        });
+    if (!userData || userData.id !== userId) {
+        res.status(403).send({
+            error: `Token contains invalid data.`
+        });
+        return;
+    }
+
+    const borrowingList = await usersModel.getBorrowingByUserId(userId);
     res.send({
         user: userData,
-        borrowing: borrowingRecord,
+        borrowing: borrowingList,
     });
 }
 
