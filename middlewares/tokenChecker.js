@@ -11,8 +11,17 @@ function verifyToken(req, res, next) {
     }
     // token = "BEARER (token)"
     const jwtToken = token.split(' ')[1];
+
     try {
         const decoded = jwt.verify(jwtToken, process.env.SECRET_KEY);
+        const expireDate = new Date(decoded.exp * 1000);
+        if (expireDate < new Date()) {
+            res.status(401).send({
+                error: 'Token is expired.',
+                messgae: 'Please log in again.'
+            });
+            return;
+        }
 
         if (!decoded.hasOwnProperty('id') || !decoded.hasOwnProperty('email')) {
             throw 'Token is invalid';
