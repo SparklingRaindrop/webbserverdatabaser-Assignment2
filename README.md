@@ -29,8 +29,8 @@ For every request the server receives timestamp, request method, route and statu
 There are four routers.
 * /books
     - [GET /books and /books/:id](#get-books)
-    - [PATCH or PUT /books](#post-books)
-    - [POST /books](#patch-or-put-booksid)
+    - [PATCH or PUT /books](#patch-or-put-booksid)
+    - [POST /books](#post-books)
     - [DELETE /books](#delete-booksid)
 * /auth
     -  [POST /auth/register](#post-authregister)
