@@ -39,7 +39,7 @@ There are four routers.
     - [POST /users/lend](#post-userslend)
     - [POST /users/return](#post-usersreturn)
 * /me
-    - [GET /me](#me-me)
+    - [GET /me](#get-me)
 ### **<mark>GET</mark> /books/**
 Calling API without an ID will return a list of all the books from the database.
 
