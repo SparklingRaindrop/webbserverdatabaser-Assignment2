@@ -383,7 +383,7 @@ fetch('http://localhost:5000/users/return', {
   
 ---
   
-### **<mark>POST</mark> /me**
+### **<mark>GET</mark> /me**
 Get registered information and borrowing list. (authorized route)
 
 ```javascript
