@@ -10,9 +10,10 @@ const { prepareQuery } = require('../JS/queryHandler');
 
 async function add(newUser) {
     const { parameters } = prepareQuery(newUser);
+    const targets = Object.keys(parameters).join(', ');
     const query =
         'INSERT INTO User (id, name, family_name, email, password) ' + 
-        'VALUES ($id, $name, $family_name, $email, $password);';
+        `VALUES (${targets});`;
 
     return new Promise((resolve, reject) => {
         db.run(query, parameters, (error) => {

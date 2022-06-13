@@ -65,22 +65,15 @@ function matchBy(column, row) {
     });
 }
 
-async function add(book) {
+async function add(newBook) {
+    const { parameters } = prepareQuery(newBook);
+    const targets = Object.keys(parameters).join(', ');
     const query = 
         'INSERT INTO Book (title, isbn, author, publish_year, publisher, language, genre )' +
-        'VALUES ($title, $isbn, $author, $publish_year, $publisher, $language, $genre);';
-    const { title, isbn, author, publish_year, publisher, language, genre } = book;
+        `VALUES (${targets});`;
 
     return new Promise ((resolve, reject) => {
-        db.run(query, {
-            $title: title,
-            $isbn: isbn,
-            $author: author,
-            $publish_year: publish_year,
-            $publisher: publisher,
-            $language: language,
-            $genre: genre
-        }, (error) => {
+        db.run(query, parameters, (error) => {
             if (error) {
                 console.error(error.message);
                 reject(error);
