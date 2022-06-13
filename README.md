@@ -25,6 +25,9 @@ Default duration is 30 minutes.
 ## server.log
 When the server runs for the first time, server.log file will be created automatically.  
 For every request the server receives timestamp, request method, route and status will be saved. 
+
+## Database diagram
+![Database diagram](https://user-images.githubusercontent.com/92432492/173369292-ef4e391e-3e3f-44b3-9284-521a89377102.JPG)
 ## Endpoints
 There are four routers.
 * /books
