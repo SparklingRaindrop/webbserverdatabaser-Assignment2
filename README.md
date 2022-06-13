@@ -37,7 +37,7 @@ There are four routers.
     -  [POST /auth/login](#post-authlogin)
 * /users
     - [POST /users/lend](#post-userslend)
-    - [POST /users/lend](#post-usersreturn)
+    - [POST /users/return](#post-usersreturn)
 * /me
     - [GET /me](#me-me)
 ### **<mark>GET</mark> /books/**
