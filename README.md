@@ -2,7 +2,6 @@
 - An API that stores data in a SQL database(SQLite)
 - Written in Node.js
 - Can only be accessed from http://localhost:3000
-
 ## How to use it
 - You need Node.js in order to run this app.
 
@@ -13,13 +12,13 @@ Default port number is 4500. (Read more in .env file section)
 
 ## .env file
 There are two environment variables in **.env.example** .
-- SECRET_KEY  
+- **SECRET_KEY**  
 A key that is used to generate [JSON Web Token (JWT)](https://jwt.io/)  
 Do not set anything that makes sense.  
-- PORT  
+- **PORT**  
 Port number that server runs on. This is optional.
 Default port number is 4500.
-- TOKEN_DURATION
+- **TOKEN_DURATION**  
 Duration for token. Details at [jsonwebtoken (JWT)](https://www.npmjs.com/package/jsonwebtoken)  
 Default duration is 30 minutes.
 
@@ -27,8 +26,12 @@ Default duration is 30 minutes.
 When the server runs for the first time, server.log file will be created automatically.  
 For every request the server receives timestamp, request method, route and status will be saved. 
 ## Endpoints
-
-### **<mark>GET</mark> /books/**
+There are four routers.
+- [/books](#books)
+- [/users](#users)
+- [/auth](#auth)
+- [/me](#me)
+### **<mark>GET</mark> /books/** {#books}
 Calling API without an ID will return a list of all the books from the database.
 
 | Name      | Description | Type   |
@@ -244,7 +247,7 @@ fetch('http://localhost:5000/books/60', {
   
 ---
   
-### **<mark>POST</mark> /auth/register**
+### **<mark>POST</mark> /auth/register** {#auth}
 Register a new user.
 | Name      | Description | Type   |
 | ----------- | ----------- | ----- |
@@ -313,7 +316,7 @@ fetch('http://localhost:5000/auth/login', {
   
 ---
   
-### **<mark>POST</mark> /users/lend**
+### **<mark>POST</mark> /users/lend** {#users}
 Borrow a book. (authorized route)
 | Name      | Description | Type   |
 | ----------- | ----------- | ----- |
@@ -371,7 +374,7 @@ fetch('http://localhost:5000/users/return', {
   
 ---
   
-  ### **<mark>POST</mark> /me**
+### **<mark>POST</mark> /me** {#me}
 Get registered information and borrowing list. (authorized route)
 
 ```javascript
