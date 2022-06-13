@@ -47,7 +47,7 @@ async function loginUser(req, res) {
     const matchedUser = await model.getPasswordByEmail(email);
     const hashedPassword = md5(password);
     if (!matchedUser || matchedUser.password !== hashedPassword) {
-        res.status(404).send({
+        res.status(403).send({
             error: 'The email address or password is incorrect.' 
         });
         return;
