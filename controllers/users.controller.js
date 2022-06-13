@@ -39,16 +39,19 @@ async function lendBook(req, res) {
         return;
     }
 
-    await usersModel.add(userId, bookId)
+    const result = await usersModel.add(userId, bookId)
         .catch(() => {
             res.status(500).send({
                 error: 'Something went wrong on the server.',
                 message: 'Please try again.'
             });
-            return;
+            return null;
         });
-    res.send({
-        message: `Book(ID: ${bookId}) is checked out successfully.`
+
+    if (!result) return;
+    res.json({
+        message: `Book(ID: ${bookId}) is checked out successfully.`,
+        result
     });
 }
 

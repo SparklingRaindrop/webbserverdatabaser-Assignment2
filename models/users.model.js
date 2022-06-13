@@ -10,17 +10,36 @@ const db = require('../config/database');
 
 const LOAN_PERIOD = 14;
 
-function add(userId, bookId) {
-    const [borrowingDate, dueDate] = generateDates();
-    const query = 'INSERT INTO Borrowing (date_borrowed, date_return, user_id, book_id)' +
-        'VALUES(?, ?, ?, ?)';
+async function add(userId, bookId) {
+    const [date_borrowed, date_return] = generateDates();
+    const query = 'INSERT INTO Borrowing (date_borrowed, date_return, user_id, book_id) ' +
+        `VALUES ($date_borrowed, $date_return, $userId, $bookId);`;
+    const params = {
+        $date_borrowed: date_borrowed,
+        $date_return: date_return,
+        $userId: userId,
+        $bookId: bookId
+    };
     return new Promise((resolve, reject) => {
-        db.run(query, [borrowingDate, dueDate, userId, bookId], (error) => {
+        db.run(query, params, (error) => {
             if (error) {
                 console.error(error.message);
                 reject(error);
             }
             resolve();
+        });
+    }).then(() =>  {
+        return new Promise(function(resolve, reject) {
+            const query = 'SELECT Borrowing.id AS borrowing_id, title, book_id, date_borrowed, date_return FROM Borrowing ' +
+            'LEFT JOIN Book ON Book.id = Borrowing.book_id ' +
+            'WHERE Borrowing.id = (SELECT MAX(id) FROM Borrowing);'
+            db.get(query, (error, row) => {
+                if (error) {
+                    console.error(error.message);
+                    reject(error);
+                }
+                resolve(row);
+            });
         });
     });
 }
@@ -30,7 +49,7 @@ function getBorrowingByBookId(book_id) {
 
     return new Promise((resolve, reject) => {
         db.get(query, {
-            "$id": book_id
+            $id: book_id
         }, (error, row) => {
             if (error) {
                 console.error(error.message);
@@ -80,17 +99,17 @@ function generateDates() {
     const today = new Date();
     // getMonth() returns index number
     const borrowingMonth = today.getMonth() + 1;
-    const borrowingDate = `${today.getFullYear()}/` +
+    const date_borrowed = `${today.getFullYear()}/` +
         `${borrowingMonth.toString().padStart(2, '0')}/` +
         `${today.getDate().toString().padStart(2, '0')}`;
 
     const due = new Date();
     const dueMonth = due.getMonth() + 1;
     due.setDate(today.getDate() + LOAN_PERIOD);
-    const returnDate = `${due.getFullYear()}/` +
+    const date_return = `${due.getFullYear()}/` +
         `${dueMonth.toString().padStart(2, '0')}/` +
         `${due.getDate().toString().padStart(2, '0')}`;
-    return [borrowingDate, returnDate];
+    return [date_borrowed, date_return];
 }
 
 module.exports = {

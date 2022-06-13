@@ -348,7 +348,14 @@ fetch('http://localhost:5000/users/lend', {
 **Result**
 ```json
 {
-    "message":"Book(ID:30) is checked out successfully."
+    "message": "Book(ID: 30) is checked out successfully.",
+    "result": {
+        "borrowing_id": 11,
+        "title": "Harry Potter and the Chamber of Secrets",
+        "book_id": 30,
+        "date_borrowed": "2022/06/13",
+        "date_return": "2022/06/27"
+    }
 }
 ```
   

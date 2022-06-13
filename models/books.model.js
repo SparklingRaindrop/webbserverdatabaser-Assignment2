@@ -67,10 +67,9 @@ function matchBy(column, row) {
 
 async function add(newBook) {
     const { parameters } = prepareQuery(newBook);
-    const targets = Object.keys(parameters).join(', ');
     const query = 
         'INSERT INTO Book (title, isbn, author, publish_year, publisher, language, genre )' +
-        `VALUES (${targets});`;
+        `VALUES ($title, $isbn, $author, $publish_year, $publisher, $language, $genre);`;
 
     return new Promise ((resolve, reject) => {
         db.run(query, parameters, (error) => {
