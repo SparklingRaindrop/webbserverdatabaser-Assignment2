@@ -1,4 +1,3 @@
-const onFinished = require('on-finished');
 const { writeFile } = require('fs/promises');
 
 const DATE_OPTIONS = {
@@ -19,16 +18,13 @@ function logWriter() {
     return function handleLog(req, res, next) {
         const method = req.method;
         const route = req.url;
- 
-        onFinished(res, async (err, res) => {
-            const logData = `[${date}] "${method} ${route}" ${res.statusCode}\n`;
-
+        res.on('finish', () => {
+            const logData = `[${date}] "${method} ${route}" ${res.statusCode} ${res._contentLength}bytes\n`;
             writeFile(LOG_FILE, logData, {
                 encoding: 'utf8',
                 flag: 'a',
             });
         });
- 
         next();
     }
 }
