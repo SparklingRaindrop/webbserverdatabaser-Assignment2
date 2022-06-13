@@ -27,11 +27,20 @@ When the server runs for the first time, server.log file will be created automat
 For every request the server receives timestamp, request method, route and status will be saved. 
 ## Endpoints
 There are four routers.
-- [/books](#books)
-- [/users](#users)
-- [/auth](#auth)
-- [/me](#me)
-### **<mark>GET</mark> /books/** {#books}
+* /books
+    - [GET /books and /books/:id](#get-books)
+    - [PATCH or PUT /books](#post-books)
+    - [POST /books](#patch-or-put-booksid)
+    - [DELETE /books](#delete-booksid)
+* /auth
+    -  [POST /auth/register](#post-authregister)
+    -  [POST /auth/login](#post-authlogin)
+* /users
+    - [POST /users/lend](#post-userslend)
+    - [POST /users/lend](#post-usersreturn)
+* /me
+    - [GET /me](#me-me)
+### **<mark>GET</mark> /books/**
 Calling API without an ID will return a list of all the books from the database.
 
 | Name      | Description | Type   |
@@ -247,7 +256,7 @@ fetch('http://localhost:5000/books/60', {
   
 ---
   
-### **<mark>POST</mark> /auth/register** {#auth}
+### **<mark>POST</mark> /auth/register**
 Register a new user.
 | Name      | Description | Type   |
 | ----------- | ----------- | ----- |
@@ -316,7 +325,7 @@ fetch('http://localhost:5000/auth/login', {
   
 ---
   
-### **<mark>POST</mark> /users/lend** {#users}
+### **<mark>POST</mark> /users/lend**
 Borrow a book. (authorized route)
 | Name      | Description | Type   |
 | ----------- | ----------- | ----- |
@@ -374,14 +383,14 @@ fetch('http://localhost:5000/users/return', {
   
 ---
   
-### **<mark>POST</mark> /me** {#me}
+### **<mark>POST</mark> /me**
 Get registered information and borrowing list. (authorized route)
 
 ```javascript
 fetch('http://localhost:5000/me', {
     method: 'GET',
     headers: {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM5NTkwMGVlLThjYzYtNDUwYi1hNmNlLTY0NTM0NzcxYjAwZSIsImVtYWlsIjoiamRvZUB0ZXN0MTIzLmNvbSIsImlhdCI6MTY1NTExOTA3NiwiZXhwIjoxNjU1MTIwODc2fQ.E4jHA2LG2nyxJxxvNljWIe4XEdE20vZBmSGHKepCqrE',
+        'Authorization': 'Bearer eyJhbGciOiJ....(token continues)',
     }
 });
 ```
