@@ -1,4 +1,5 @@
 const db = require('../config/database');
+const { prepareQuery } = require('../JS/queryHandler');
 
 /*
     id: int,
@@ -99,7 +100,7 @@ async function add(book) {
     });
 }
 
-function update(id, newData) {
+async function update(id, newData) {
     const { targets, parameters } = prepareQuery(newData);
     const query = `UPDATE Book SET ${targets} WHERE id = $id;`;
 
@@ -112,7 +113,19 @@ function update(id, newData) {
                 console.error(error.message);
                 reject(error);
             }
-            resolve();
+            resolve(id);
+        });
+    }).then((id) =>  {
+        return new Promise(function(resolve, reject) {
+            db.get('SELECT * FROM Book WHERE id = $id;',{
+                $id: id
+            }, (error, row) => {
+                if (error) {
+                    console.error(error.message);
+                    reject(error);
+                }
+                resolve(row);
+            });
         });
     });
 }
@@ -132,25 +145,6 @@ function remove(id) {
         });
     });
 }
-
-function prepareQuery(newDataObj) {
-    const targets = Object.keys(newDataObj).reduce((result, key) => {
-        result += `${result !== '' ? ', ' : ''}${key} = $${key}`;
-        return result;
-    }, '');
-
-    const parameters = {...newDataObj};
-    for (const property in newDataObj) {
-        parameters[`$${property}`] = newDataObj[property];
-        delete parameters[property];
-    }
-
-    return {
-        targets,
-        parameters
-    };
-}
-
 
 module.exports = {
     getAll,

@@ -1,4 +1,5 @@
 const db = require('../config/database');
+const { prepareQuery } = require('../JS/queryHandler');
 /* 
     id: 'string',
     name: 'string',
@@ -7,21 +8,33 @@ const db = require('../config/database');
     password: 'string',
 */
 
-function add(newUser) {
+async function add(newUser) {
+    const { parameters } = prepareQuery(newUser);
     const query =
         'INSERT INTO User (id, name, family_name, email, password) ' + 
-        'VALUES (?, ?, ?, ?, ?);';
-    const arguments = Object.values(newUser);
+        'VALUES ($id, $name, $family_name, $email, $password);';
 
     return new Promise((resolve, reject) => {
-        db.run(query, arguments, (error, result) => {
+        db.run(query, parameters, (error) => {
             if (error) {
                 console.error(error.message);
                 reject(error);
             }
-            resolve(result);
+            resolve(newUser.email);
         });
-    });
+    }).then((email) =>  {
+        return new Promise(function(resolve, reject) {
+            db.get('SELECT id, name, family_name, email FROM User WHERE email = $email;', {
+                $email: email
+            }, (error, result) => {
+                if (error) {
+                    console.error(error.message);
+                    reject(error);
+                }
+                resolve(result);
+            });
+        });
+    });;
 }
 
 function getByEmail(email) {

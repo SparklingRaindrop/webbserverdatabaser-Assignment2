@@ -16,7 +16,7 @@ async function addUser(req, res) {
         return;
     }
 
-    const { name, familyName, email, password } = userInput;
+    const { name, family_name, email, password } = userInput;
     const isExisting = await model.getByEmail(email) !== undefined;
     if (isExisting) {
         res.status(400).send({
@@ -28,12 +28,12 @@ async function addUser(req, res) {
     const newUser = {
         id: uuid.v4(),
         name: name.toLowerCase(),
-        familyName: familyName.toLowerCase(),
+        family_name: family_name.toLowerCase(),
         email: email.toLowerCase(),
         password: md5(password)
     }
-    await model.add(newUser);
-    res.status(201).send(newUser);
+    const result = await model.add(newUser);
+    res.status(201).send(result);
 }
 
 async function loginUser(req, res) {
@@ -73,26 +73,30 @@ async function loginUser(req, res) {
 }
 
 function isValid(target) {
-    const emailRegex = new RegExp(
-        '^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|' +
-        '(".+"))@' +
-        '((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|' +
-        '(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'
+    const emailRegex = new RegExp('' +
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))/.source +
+        /@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.source
     );
-
+    // At least one uppercase, one special character, one number,
+    // minimum 8 but maximum 10
+    const passwordRegex = new RegExp('' +
+        /^(?=.*[A-Z])(?=.*\d)/.source +
+        /(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,10}$/.source
+    );
     const properties = {
         name: 'string',
-        familyName: 'string',
+        family_name: 'string',
         email: 'string',
         password: 'string',
     };
-
     const isValidType = Object.keys(target).every(key => 
         properties.hasOwnProperty(key) &&
         target[key] !== '' &&
         typeof target[key] === properties[key]
     );
-    if (!isValidType || target.email.match(emailRegex)) return false;
+    const isValidEmail = emailRegex.test(target.email);
+    const isValidPassword = passwordRegex.test(target.password);
+    if (!isValidType || !isValidEmail || !isValidPassword) return false;
     return Object.keys(properties).length === Object.keys(target).length;
 }
 

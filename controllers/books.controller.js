@@ -50,8 +50,8 @@ async function addBook(req, res) {
 
 async function updateBook(req, res) {
     const id = Number(req.params.id);
-    const result = await model.getById(id);
-    if (!result) {
+    const existingData = await model.getById(id);
+    if (!existingData) {
         res.status(404).send({
             error: `A book with ID[${id}] was not found.`,
             message: "Ensure requested ID is correct",
@@ -66,8 +66,8 @@ async function updateBook(req, res) {
         newData.isbn = newData.isbn.replaceAll('-', '');
     }
 
-    await model.update(id, newData);
-    res.send({ message: `The book (ID:${id}) is successfully updated.` });
+    const result = await model.update(id, newData);
+    res.send(result);
 }
 
 function removeBook(req, res) {
