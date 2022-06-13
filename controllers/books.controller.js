@@ -74,7 +74,7 @@ function removeBook(req, res) {
     const id = Number(req.params.id);
     model.remove(id);
     res.send({
-        message: `Data(ID:${id}) is successfully removed.`
+        message: `Book(ID: ${id}) is successfully removed.`
     });
 }
 

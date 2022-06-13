@@ -69,7 +69,7 @@ async function loginUser(req, res) {
         process.env.SECRET_KEY, 
         { expiresIn: TOKEN_DURATION }
     );
-    res.json(token);
+    res.json({ token });
 }
 
 function isValid(target) {

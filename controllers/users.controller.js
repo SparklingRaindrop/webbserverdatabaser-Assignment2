@@ -47,7 +47,9 @@ async function lendBook(req, res) {
             });
             return;
         });
-    res.send('Book is checked out successfully.');
+    res.send({
+        message: `Book(ID: ${bookId}) is checked out successfully.`
+    });
 }
 
 async function returnBook(req, res) {
@@ -80,7 +82,10 @@ async function returnBook(req, res) {
         return;
     }
     await usersModel.removeBorrowing(userId, bookId);
-    res.send('Successfully returned');
+
+    res.send( {
+        message: `Book(ID: ${bookId}) is successfully returned.`
+    });
 }
 
 async function handleIncomingData(req, res) {
