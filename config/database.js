@@ -38,8 +38,8 @@ const db = new sqlite3.Database('./config/db.sqlite', (error) => {
         date_return TEXT,
         user_id TEXT NOT NULL,
         book_id INTEGER NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES User (user_id),
-        FOREIGN KEY (book_id) REFERENCES Book (book_id)
+        FOREIGN KEY (user_id) REFERENCES User (id),
+        FOREIGN KEY (book_id) REFERENCES Book (id)
     );
 `;
 
