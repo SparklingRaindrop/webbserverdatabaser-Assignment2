@@ -49,13 +49,13 @@ Calling API without an ID will return a list of all the books from the database.
 | Name      | Description | Type   |
 | ----------- | ----------- | ----- |
 | title  | Title of the book | string
-| isbn | ISBN number (10 or 13 digits) | string
+| isbn | ISBN number (10 or 13 digits | with or without hyphen) | string
 | author | Author of the book | string
 | publish_year | Publish year | number
 | publisher | Publisher of the book | string
 | language | Language that book is written in | string
 | genre | Genre | string
-| own (*without ID) | Total number of copies that the library own | number
+| own (*without ID) | Total number of copies that the library has | number
 | available (*without ID) | Total number of copies that is available to lend | number
 | available (*with ID) | If it is available to lend | boolean
 | return_date (*with ID) | Returning date when available is false | string
@@ -197,8 +197,13 @@ fetch('http://localhost:5000/books/60', {
     method: 'PATCH',
     body: JSON.stringify(
         {
-            language: 'sv',
-            genre: 'novel'
+            title: "The Lord of the Rings",
+            isbn: "9788845292613",
+            author: "J. R. R. Tolkien",
+            publish_year: 1954,
+            publisher: "Allen & Unwin",
+            language: "en",
+            genre: "fantasy"
         }
     ),
     headers: {
