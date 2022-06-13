@@ -4,8 +4,6 @@ const md5 = require('md5');
 const jwt = require('jsonwebtoken');
 const model = require('../models/auth.model');
 
-const TOKEN_DURATION = '30m';
-
 async function addUser(req, res) {
     const userInput = req.body;
     if (!isValid(userInput)) {
@@ -67,7 +65,7 @@ async function loginUser(req, res) {
         email
     }, 
         process.env.SECRET_KEY, 
-        { expiresIn: TOKEN_DURATION }
+        { expiresIn: process.env.TOKEN_DURATION || '30m' }
     );
     res.json({ token });
 }

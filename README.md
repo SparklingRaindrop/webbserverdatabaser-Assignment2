@@ -8,8 +8,8 @@
 
 - To run server  
 Run `node server.js` or `npm run start` in the terminal.  
-Then server will run.  
-Default port number is 4500.
+Then server will run.
+Default port number is 4500. (Read more in .env file section) 
 
 ## .env file
 There are two environment variables in **.env.example** .
@@ -18,6 +18,10 @@ A key that is used to generate [JSON Web Token (JWT)](https://jwt.io/)
 Do not set anything that makes sense.  
 - PORT  
 Port number that server runs on. This is optional.
+Default port number is 4500.
+- TOKEN_DURATION
+Duration for token. Details at [jsonwebtoken (JWT)](https://www.npmjs.com/package/jsonwebtoken)  
+Default duration is 30 minutes.
 
 ## server.log
 When the server runs for the first time, server.log file will be created automatically.  
