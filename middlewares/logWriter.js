@@ -18,8 +18,12 @@ function logWriter() {
     return function handleLog(req, res, next) {
         const method = req.method;
         const route = req.url;
+        const start = process.hrtime.bigint();
+
         res.on('finish', () => {
-            const logData = `[${date}] "${method} ${route}" ${res.statusCode} ${res._contentLength}bytes\n`;
+            const end = process.hrtime.bigint();
+            const speed = Number(end - start) / 1000000;
+            const logData = `[${date}] "${method} ${route}" ${res.statusCode} ${res._contentLength}bytes ${speed.toFixed(2)}ms\n`;
             writeFile(LOG_FILE, logData, {
                 encoding: 'utf8',
                 flag: 'a',
