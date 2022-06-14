@@ -15,7 +15,7 @@ There are four environment variables in **.env.example** .
 - **SECRET_KEY**  
 A key that is used to generate [JSON Web Token (JWT)](https://jwt.io/)  
 Do not set anything that makes sense.  
-<u>SECRET_KEY must be set in order to run the server properly.</u>
+<ins>SECRET_KEY must be set in order to run the server properly.</ins>
 - **PORT**  
 Port number that server runs on. This is optional.
 Default port number is 4500.
