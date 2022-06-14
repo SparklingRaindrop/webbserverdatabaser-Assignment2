@@ -2,8 +2,6 @@ const usersModel = require('../models/users.model');
 const authModel = require('../models/auth.model');
 const booksModel = require('../models/books.model');
 
-const BORROWING_LIMIT = 5;
-
 // I should not use Book ID?
 async function lendBook(req, res) {
     const incomingData = await handleIncomingData(req, res);
@@ -32,9 +30,10 @@ async function lendBook(req, res) {
             if (!data) return;
             return data.length;
         });
-    if (borrowingCount >= BORROWING_LIMIT) {
+    const limit = process.env.BORROWING_LIMIT || 5;
+    if (borrowingCount >= limit) {
         res.status(403).send({
-            error: `This user is already borrowing ${BORROWING_LIMIT} books.`
+            error: `This user is already borrowing ${ limit } books.`
         });
         return;
     }

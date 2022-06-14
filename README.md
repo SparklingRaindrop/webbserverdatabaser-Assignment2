@@ -11,17 +11,20 @@ Then server will run.
 Default port number is 4500. (Read more in .env file section) 
 
 ## .env file
-There are two environment variables in **.env.example** .
+There are four environment variables in **.env.example** .
 - **SECRET_KEY**  
 A key that is used to generate [JSON Web Token (JWT)](https://jwt.io/)  
 Do not set anything that makes sense.  
+<u>SECRET_KEY must be set in order to run the server properly.</u>
 - **PORT**  
 Port number that server runs on. This is optional.
 Default port number is 4500.
 - **TOKEN_DURATION**  
 Duration for token. Details at [jsonwebtoken (JWT)](https://www.npmjs.com/package/jsonwebtoken)  
 Default duration is 30 minutes.
-
+- **BORROWING_LIMIT**  
+Maximum number of books that one user can borrow.  
+Default number is 5.
 ## server.log
 When the server runs for the first time, server.log file will be created automatically.  
 For every request the server receives timestamp, request method, route and status will be saved. 

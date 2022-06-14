@@ -64,7 +64,7 @@ async function loginUser(req, res) {
         id,
         email
     }, 
-        process.env.SECRET_KEY, 
+        process.env.SECRET_KEY,
         { expiresIn: process.env.TOKEN_DURATION || '30m' }
     );
     res.json({ token });
