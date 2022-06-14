@@ -143,7 +143,7 @@ Adding a new book to the database.
 | language | Language that book is written in | string
 | genre* | Genre | string
   
-*Can not be empty
+*Can not be empty string
 
 ```javascript
 fetch('http://localhost:5000/books/', {
