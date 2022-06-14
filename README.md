@@ -52,7 +52,7 @@ Calling API without an ID will return a list of all the books from the database.
 | Name      | Description | Type   |
 | ----------- | ----------- | ----- |
 | title  | Title of the book | string
-| isbn | ISBN number (10 or 13 digits | with or without hyphen) | string
+| isbn | ISBN number (10 or 13 digits with or without hyphen) | string
 | author | Author of the book | string
 | publish_year | Publish year | number
 | publisher | Publisher of the book | string
