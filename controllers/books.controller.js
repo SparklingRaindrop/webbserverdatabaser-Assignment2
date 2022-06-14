@@ -70,8 +70,16 @@ async function updateBook(req, res) {
     res.send(result);
 }
 
-function removeBook(req, res) {
+async function removeBook(req, res) {
     const id = Number(req.params.id);
+    const existingData = await model.getById(id);
+    if (!existingData) {
+        res.status(404).send({
+            error: `A book with ID[${id}] was not found.`,
+            message: "Ensure requested ID is correct",
+        });
+        return;
+    }
     model.remove(id);
     res.send({
         message: `Book(ID: ${id}) is successfully removed.`
