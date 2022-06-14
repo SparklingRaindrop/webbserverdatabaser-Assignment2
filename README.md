@@ -66,7 +66,7 @@ Calling API without an ID will return a list of all the books from the database.
 **Get all the books**  
 Getting all the titles
 ```javascript
-fetch('http://localhost:5000/books/');
+fetch('http://localhost:4500/books/');
 ```
 **Result**
 ```json
@@ -110,7 +110,7 @@ fetch('http://localhost:5000/books/');
 **Get one book**  
 Get one specific book with its ID
 ```javascript
-fetch('http://localhost:5000/books/:id');
+fetch('http://localhost:4500/books/:id');
 ```
 **Result**
 ```json
@@ -146,7 +146,7 @@ Adding a new book to the database.
 *Can not be empty string
 
 ```javascript
-fetch('http://localhost:5000/books/', {
+fetch('http://localhost:4500/books/', {
     method: 'POST',
     body: JSON.stringify(
         {
@@ -196,7 +196,7 @@ Updating a book on the database. ID is immutable.
 *Can not be empty string
   
 ```javascript
-fetch('http://localhost:5000/books/60', {
+fetch('http://localhost:4500/books/60', {
     method: 'PATCH',
     body: JSON.stringify(
         {
@@ -216,7 +216,7 @@ fetch('http://localhost:5000/books/60', {
 ```
   
 ```javascript
-fetch('http://localhost:5000/books/60', {
+fetch('http://localhost:4500/books/60', {
     method: 'PUT',
     body: JSON.stringify(
         {
@@ -254,7 +254,7 @@ fetch('http://localhost:5000/books/60', {
 Deleting a task on the database.
 
 ```javascript
-fetch('http://localhost:5000/books/60', {
+fetch('http://localhost:4500/books/60', {
     method: 'DELETE'
 });
 ```
@@ -279,7 +279,7 @@ Register a new user.
   
 *At least one uppercase, one special character, one number, minimum 8 and maximum 10
 ```javascript
-fetch('http://localhost:5000/auth/register', {
+fetch('http://localhost:4500/auth/register', {
     method: 'POST',
     body: JSON.stringify(
         {
@@ -314,7 +314,7 @@ User login and get token in return.
 | password | password | string
 
 ```javascript
-fetch('http://localhost:5000/auth/login', {
+fetch('http://localhost:4500/auth/login', {
     method: 'POST',
     body: JSON.stringify(
         {
@@ -343,7 +343,7 @@ Borrow a book. (authorized route)
 | bookId  | book ID | number
 
 ```javascript
-fetch('http://localhost:5000/users/lend', {
+fetch('http://localhost:4500/users/lend', {
     method: 'POST',
     body: JSON.stringify(
         {
@@ -379,7 +379,7 @@ Return a book. (authorized route)
 | bookId  | book ID | number
 
 ```javascript
-fetch('http://localhost:5000/users/return', {
+fetch('http://localhost:4500/users/return', {
     method: 'POST',
     body: JSON.stringify(
         {
@@ -405,7 +405,7 @@ fetch('http://localhost:5000/users/return', {
 Get registered information and borrowing list. (authorized route)
 
 ```javascript
-fetch('http://localhost:5000/me', {
+fetch('http://localhost:4500/me', {
     method: 'GET',
     headers: {
         'Authorization': 'Bearer eyJhbGciOiJ....(token continues)',
