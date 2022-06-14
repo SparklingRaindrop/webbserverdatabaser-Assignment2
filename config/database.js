@@ -1,8 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
 
-// Add sample data
-const addSampleData = require('../sampleData');
-
 const db = new sqlite3.Database('./config/db.sqlite', (error) => {
     if (error) {
         console.error(error.message);
@@ -50,8 +47,6 @@ const db = new sqlite3.Database('./config/db.sqlite', (error) => {
             }
         });
     });
-
-    addSampleData(db);
 });
 
 module.exports = db;
