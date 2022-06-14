@@ -206,7 +206,7 @@ fetch('http://localhost:5000/books/60', {
             publish_year: 1954,
             publisher: "Allen & Unwin",
             language: "en",
-            genre: "fantasy"
+            genre: "novel"
         }
     ),
     headers: {
@@ -226,7 +226,7 @@ fetch('http://localhost:5000/books/60', {
             publish_year: 1954,
             publisher: "Allen & Unwin",
             language: "en",
-            genre: "fantasy"
+            genre: "novel"
         }
     ),
     headers: {
@@ -244,7 +244,7 @@ fetch('http://localhost:5000/books/60', {
     "publish_year": 1954,
     "publisher": "Allen & Unwin",
     "language": "en",
-    "genre": "fantasy"
+    "genre": "novel"
 }
 ```
   
